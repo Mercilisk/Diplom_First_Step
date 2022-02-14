@@ -76,6 +76,8 @@ osThreadId defaultTaskHandle;
 
 uart_cobs_service_t Cobs_UART;
 
+adxl345_handle_t 	ADXL;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -329,23 +331,30 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void ADXL345_Config()
 {
-	ADXL_ConfigTypeDef_t ADXL 					=	{0};
 
-	ADXL.PowerMode 								= 	NormalPower;
-	ADXL.BWRate	 								=	BWRATE_400;
-	ADXL.WakeUpRate 							=	WakeUpRate_8;
-	ADXL.AutoSleepConfig.AutoSleep 				=	AutoSleepOFF;
-	ADXL.AutoSleepConfig.ThreshInact 			=	10;
-	ADXL.AutoSleepConfig.TimeInact				=	10;
-	ADXL.Format.Resolution 						=	RESFULL;
-	ADXL.Format.Range	 						=	RANGE_16G;
-	ADXL.Format.IntInvert 						=	ACTIVE_HIGH;
-	ADXL.Format.SPI_Mode 						=	FORE_WIRE_MODE;
-	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(SPI_CS_GPIO_Port, SPI_CS_Pin, GPIO_PIN_SET);
+	ADXL.spi.spi_rtos->hspi 					=	SPI2;
+	if(spi_freertos_init(ADXL.spi.spi_rtos) == SPI_FREERTOS_EXIST)
+	{
+		Error_Handler();
+	}
+	ADXL.settings.data_rate 					=	ADXL345_DATARATE_3200_HZ;
+	ADXL.settings.meas_range					=	ADXL345_RANGE_16_G;
+	ADXL.settings.align							=	ADXL345_ALIGN_LSB;
+	ADXL.settings.resolution 					=	ADXL345_RESOLUTION_FULL;
+	//	Offset Prameter
+	ADXL.settings.offset.x 						=	0;
+	ADXL.settings.offset.y 						=	0;
+	ADXL.settings.offset.z 						=	0;
+	//	Interupt Settings
+	ADXL.settings.int_en 						=	ADXL345_INT_WATERMARK;
+	ADXL.settings.map_to_int2 					=	ADXL345_INT_WATERMARK;
+	ADXL.settings.fifo_watermark 				=	0x1F;
+	ADXL.settings.fifo_mode 					=	ADXL345_FIFO_FIFO;
+	ADXL.settings.fifo_trigger 					=	ADXL345_FIFO_TRIG_INT1;
+	ADXL.mutex_timeout 							=	10;
+	ADXL.transfer_timeout 						=	10;
 #ifdef 	Debug_Active
-	ADXL_Status ADXLStatus 						= 	ADXL345_Init(&ADXL, &hspi2);
-	if (ADXLStatus == ADXL_ERR)
+	if (adxl345_init(&ADXL) != ADXL345_OK)
 	{
 		perror("Error: Accelerometer is not found");
 		while(1)
@@ -354,14 +363,10 @@ void ADXL345_Config()
 	}
 #else
 	/*	Find Accelerometer ADXL345	*/
-	ADXL_Status ADXLStatus			=	ADXL_ERR;
-	while(ADXLStatus		  	   ==	ADXL_ERR)
+	while(adxl345_init(&ADXL) != ADXL345_OK)
 	{
-		ADXLStatus 					= 	ADXL345_Init(ADXL, hspi2);
 	}
 #endif
-
-	ADXL345_MeasureON();
 
 }
 
@@ -400,18 +405,20 @@ void ADXL345_Data_Collector_Task(void const * argument)
 
 	float	Signal[Length_Realization] 			=	{0};
 
-	/* Infinite loop */
-	for(uint16_t Index_Count = 0;; Index_Count++)
-	{
-		//	Записать данные в очередь, когда буфер переполниться
-		if (Index_Count > Length_Realization)
-		{
-			Index_Count = 0;
-			uart_cobs_send(&Cobs_UART, &Signal, Length_Realization, 10 * portTICK_PERIOD_MS);
-		}
+	uint16_t Index_Count;
+Start_Mesurments:
 
-		Signal[Index_Count] 					=	ADXL345_GetGValue(Yaxis);
+	Index_Count 						= 	0;
+	adxl345_start(&ADXL);
+
+	/* Infinite loop */
+	for(;; Index_Count++)
+	{
+		adxl345_get_data(&ADXL, &data);
 	}
+
+	uart_cobs_send(&Cobs_UART, &Signal, Length_Realization, 10 * portTICK_PERIOD_MS);
+	goto Start_Mesurments;
   /* USER CODE END 5 */
 }
 

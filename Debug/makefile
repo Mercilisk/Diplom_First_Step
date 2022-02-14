@@ -14,7 +14,6 @@ RM := rm -rf
 -include Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/subdir.mk
 -include Middlewares/Third_Party/FreeRTOS/Source/subdir.mk
 -include Library_FREERTOS_HAL/Source/subdir.mk
--include Library_ADXL345/Source/subdir.mk
 -include Drivers/STM32F1xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
@@ -67,8 +66,8 @@ all: main-build
 main-build: Diplom_First_Step.elf secondary-outputs
 
 # Tool invocations
-Diplom_First_Step.elf: $(OBJS) $(USER_OBJS) C:\Users\Professional\Desktop\AShershunovich-RF18\First_Step_Diplom\STM32F103RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Diplom_First_Step.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\Professional\Desktop\AShershunovich-RF18\First_Step_Diplom\STM32F103RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Diplom_First_Step.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Diplom_First_Step.elf: $(OBJS) $(USER_OBJS) F:\STM32CubeIDE\Projects\Diplom_First_Step\STM32F103RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Diplom_First_Step.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"F:\STM32CubeIDE\Projects\Diplom_First_Step\STM32F103RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Diplom_First_Step.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
