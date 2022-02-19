@@ -7,8 +7,9 @@
 /*----------------------------------------------------------------------
   Includes
 ----------------------------------------------------------------------*/
-
+#include "main.h"
 /* HAL */
+#include "stm32f1xx_hal.h"
 #include "stm32f1xx_hal_spi.h"
 #include "stm32f1xx_hal_gpio.h"
 /* FreeRTOS */

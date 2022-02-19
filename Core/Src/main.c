@@ -40,7 +40,8 @@
 #include 	"uart_cobs_service.h"
 #include 	"uart_freertos.h"
 /*	Acceleration sensor	*/
-#include 	"ADXL345.h"
+#include 	"adxl345.h"
+#include 	"adxl345_rtos.h"
 
 #define 	Debug_Active
 
@@ -68,15 +69,18 @@
 
 /* Private variables ---------------------------------------------------------*/
 SPI_HandleTypeDef hspi2;
+DMA_HandleTypeDef hdma_spi2_rx;
+DMA_HandleTypeDef hdma_spi2_tx;
 
 UART_HandleTypeDef huart2;
 
 osThreadId defaultTaskHandle;
 /* USER CODE BEGIN PV */
 
-uart_cobs_service_t Cobs_UART;
+uart_cobs_service_t 	Cobs_UART;
 
-adxl345_handle_t 	ADXL;
+adxl345_handle_t 		ADXL;
+adxl345_task_handle_t 	hadxl;
 
 /* USER CODE END PV */
 
@@ -84,6 +88,7 @@ adxl345_handle_t 	ADXL;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
+static void MX_DMA_Init(void);
 static void MX_SPI2_Init(void);
 void ADXL345_Data_Collector_Task(void const * argument);
 
@@ -126,6 +131,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
+  MX_DMA_Init();
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
 
@@ -149,12 +155,13 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, ADXL345_Data_Collector_Task, osPriorityNormal, 0, 2048);
+  osThreadDef(defaultTask, ADXL345_Data_Collector_Task, osPriorityNormal, 0, 1536);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  UART_Cobs_Config();
+  ADXL345_Config();
+  //UART_Cobs_Config();
   /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
@@ -282,6 +289,25 @@ static void MX_USART2_UART_Init(void)
 }
 
 /**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA1_Channel4_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
+  /* DMA1_Channel5_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -315,6 +341,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(Green_GPIO_Port, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : GPIO_Int1_Accelerometer_Pin */
+  GPIO_InitStruct.Pin = GPIO_Int1_Accelerometer_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIO_Int1_Accelerometer_GPIO_Port, &GPIO_InitStruct);
+
   /*Configure GPIO pin : SPI_CS_Pin */
   GPIO_InitStruct.Pin = SPI_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -332,28 +364,46 @@ static void MX_GPIO_Init(void)
 void ADXL345_Config()
 {
 
-	ADXL.spi.spi_rtos->hspi 					=	SPI2;
+	spi_freertos_t	spi_rtos;
+	ADXL.spi.spi_rtos							=	&spi_rtos;
+	ADXL.spi.spi_rtos->hspi 					=	&hspi2;
 	if(spi_freertos_init(ADXL.spi.spi_rtos) == SPI_FREERTOS_EXIST)
 	{
 		Error_Handler();
 	}
+	ADXL.spi.nss.pin							=	SPI_CS_Pin;
+	ADXL.spi.nss.port 							=	SPI_CS_GPIO_Port;
 	ADXL.settings.data_rate 					=	ADXL345_DATARATE_3200_HZ;
 	ADXL.settings.meas_range					=	ADXL345_RANGE_16_G;
 	ADXL.settings.align							=	ADXL345_ALIGN_LSB;
 	ADXL.settings.resolution 					=	ADXL345_RESOLUTION_FULL;
-	//	Offset Prameter
+	//	Offset Parameter
 	ADXL.settings.offset.x 						=	0;
 	ADXL.settings.offset.y 						=	0;
 	ADXL.settings.offset.z 						=	0;
-	//	Interupt Settings
-	ADXL.settings.int_en 						=	ADXL345_INT_WATERMARK;
-	ADXL.settings.map_to_int2 					=	ADXL345_INT_WATERMARK;
-	ADXL.settings.fifo_watermark 				=	0x1F;
-	ADXL.settings.fifo_mode 					=	ADXL345_FIFO_FIFO;
+	//	Interrupt Settings
+	ADXL.settings.int_en 						=	ADXL345_INT_DATA_READY;//ADXL345_INT_WATERMARK;
+	ADXL.settings.map_to_int2 					=	ADXL345_INT_DATA_READY;//ADXL345_INT_WATERMARK;
+	ADXL.int1.pin 								=	GPIO_Int1_Accelerometer_Pin;
+	ADXL.int1.port								=	GPIO_Int1_Accelerometer_GPIO_Port;
+	ADXL.settings.fifo_watermark 				=	0x00; //0x1F;
+	ADXL.settings.fifo_mode 					=	ADXL345_FIFO_BYPASS; //ADXL345_FIFO_FIFO;
 	ADXL.settings.fifo_trigger 					=	ADXL345_FIFO_TRIG_INT1;
 	ADXL.mutex_timeout 							=	10;
 	ADXL.transfer_timeout 						=	10;
-#ifdef 	Debug_Active
+
+	//	Configurate FREE RTOS AND ADXL345
+
+	hadxl.hadxl 								=	ADXL;
+	hadxl.fifo_frame_size 						=	32;
+	hadxl.fifo_frame_qty 						=	1;
+	adxl345_task_create(						"Task_ADXL345_RTOS",
+												osPriorityNormal,
+												0,
+												256,
+												&hadxl);
+
+/*#ifdef 	Debug_Active
 	if (adxl345_init(&ADXL) != ADXL345_OK)
 	{
 		perror("Error: Accelerometer is not found");
@@ -361,12 +411,12 @@ void ADXL345_Config()
 		{
 		}
 	}
-#else
+#else*/
 	/*	Find Accelerometer ADXL345	*/
-	while(adxl345_init(&ADXL) != ADXL345_OK)
+	/*while(adxl345_init(&ADXL) != ADXL345_OK)
 	{
 	}
-#endif
+#endif*/
 
 }
 
@@ -376,7 +426,7 @@ void UART_Cobs_Config(void)
 	uart_cobs_service_tx_create(					"Task_uart_cobs_service_tx",
 													osPriorityNormal,
 													0,
-													724,
+													256,
 													&Cobs_UART
 								);
 	Cobs_UART.huart 								=	(uart_freertos_t*) pvPortMalloc(sizeof(uart_freertos_t));
@@ -388,6 +438,14 @@ void UART_Cobs_Config(void)
 	Cobs_UART.mode 									=	UART_COBS_INTERRUPT;
 
 }
+
+/*void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	if(GPIO_Pin == GPIO_Int1_Accelerometer_Pin)
+	{
+
+	}
+}*/
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_ADXL345_Data_Collector_Task */
@@ -401,23 +459,21 @@ void ADXL345_Data_Collector_Task(void const * argument)
 {
   /* USER CODE BEGIN 5 */
 
-	ADXL345_Config();
-
 	float	Signal[Length_Realization] 			=	{0};
-
+	adxl345_acc_offset_t	data 				=	{0, 0, 0};
 	uint16_t Index_Count;
 Start_Mesurments:
 
 	Index_Count 						= 	0;
-	adxl345_start(&ADXL);
+	//adxl345_start(&ADXL);
 
 	/* Infinite loop */
-	for(;; Index_Count++)
+	for(;Index_Count >= Length_Realization; Index_Count++)
 	{
-		adxl345_get_data(&ADXL, &data);
+		//adxl345_get_data(&ADXL, ((adxl345_acc_offset_t *) &data));
 	}
 
-	uart_cobs_send(&Cobs_UART, &Signal, Length_Realization, 10 * portTICK_PERIOD_MS);
+	//uart_cobs_send(&Cobs_UART, &Signal, Length_Realization, 10 * portTICK_PERIOD_MS);
 	goto Start_Mesurments;
   /* USER CODE END 5 */
 }

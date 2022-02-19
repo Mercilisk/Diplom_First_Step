@@ -25,6 +25,8 @@
 "./Library_FREERTOS_HAL/Source/adxl345.o"
 "./Library_FREERTOS_HAL/Source/adxl345_rtos.o"
 "./Library_FREERTOS_HAL/Source/cobs.o"
+"./Library_FREERTOS_HAL/Source/exti_freertos.o"
+"./Library_FREERTOS_HAL/Source/gpio_freertos.o"
 "./Library_FREERTOS_HAL/Source/spi_freertos.o"
 "./Library_FREERTOS_HAL/Source/uart_cobs_service.o"
 "./Library_FREERTOS_HAL/Source/uart_freertos.o"

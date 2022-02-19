@@ -1,0 +1,6 @@
+exti_freertos.c:16:12:exti_freertos_register	16	static
+exti_freertos.c:28:6:exti_freertos_unregister	16	static
+exti_freertos.c:36:6:HAL_GPIO_EXTI_Callback	24	static,ignoring_inline_asm
+exti_freertos.c:48:30:exti_freertos_list_append	24	static
+exti_freertos.c:72:30:exti_freertos_list_delete	24	static
+exti_freertos.c:93:23:exti_freertos_find_item	24	static

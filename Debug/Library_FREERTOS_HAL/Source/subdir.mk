@@ -8,6 +8,8 @@ C_SRCS += \
 ../Library_FREERTOS_HAL/Source/adxl345.c \
 ../Library_FREERTOS_HAL/Source/adxl345_rtos.c \
 ../Library_FREERTOS_HAL/Source/cobs.c \
+../Library_FREERTOS_HAL/Source/exti_freertos.c \
+../Library_FREERTOS_HAL/Source/gpio_freertos.c \
 ../Library_FREERTOS_HAL/Source/spi_freertos.c \
 ../Library_FREERTOS_HAL/Source/uart_cobs_service.c \
 ../Library_FREERTOS_HAL/Source/uart_freertos.c 
@@ -16,6 +18,8 @@ OBJS += \
 ./Library_FREERTOS_HAL/Source/adxl345.o \
 ./Library_FREERTOS_HAL/Source/adxl345_rtos.o \
 ./Library_FREERTOS_HAL/Source/cobs.o \
+./Library_FREERTOS_HAL/Source/exti_freertos.o \
+./Library_FREERTOS_HAL/Source/gpio_freertos.o \
 ./Library_FREERTOS_HAL/Source/spi_freertos.o \
 ./Library_FREERTOS_HAL/Source/uart_cobs_service.o \
 ./Library_FREERTOS_HAL/Source/uart_freertos.o 
@@ -24,6 +28,8 @@ C_DEPS += \
 ./Library_FREERTOS_HAL/Source/adxl345.d \
 ./Library_FREERTOS_HAL/Source/adxl345_rtos.d \
 ./Library_FREERTOS_HAL/Source/cobs.d \
+./Library_FREERTOS_HAL/Source/exti_freertos.d \
+./Library_FREERTOS_HAL/Source/gpio_freertos.d \
 ./Library_FREERTOS_HAL/Source/spi_freertos.d \
 ./Library_FREERTOS_HAL/Source/uart_cobs_service.d \
 ./Library_FREERTOS_HAL/Source/uart_freertos.d 

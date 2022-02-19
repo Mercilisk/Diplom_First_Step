@@ -8,9 +8,10 @@
 /*----------------------------------------------------------------------
   Includes
 ----------------------------------------------------------------------*/
-
+#include "main.h"
 #include "adxl345.h"
 /* FreeRTOS */
+#include "stm32f1xx_hal.h"
 #include "FreeRTOS.h"
 #include "queue.h"
 #include "semphr.h"

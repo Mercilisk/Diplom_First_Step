@@ -1,3 +1,4 @@
+#include "main.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
@@ -5,8 +6,8 @@
 #include "cmsis_os.h"
 
 #include "adxl345_rtos.h"
-#include "ic/imu/adxl345.h"
-#include "io/exti_freertos.h"
+#include "adxl345.h"
+#include "exti_freertos.h"
 
 typedef enum
 {

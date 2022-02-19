@@ -1,0 +1,7 @@
+adxl345_rtos.c:31:6:adxl345_task	32	static
+adxl345_rtos.c:147:12:adxl345_task_create	56	static
+adxl345_rtos.c:169:12:adxl345_suspend	16	static
+adxl345_rtos.c:175:12:adxl345_wait_for_init	16	static
+adxl345_rtos.c:180:6:adxl345_resume	8	static
+adxl345_rtos.c:185:13:adxl345_int1	24	static
+adxl345_rtos.c:192:13:adxl345_int2	24	static

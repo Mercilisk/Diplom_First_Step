@@ -11,8 +11,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#include "main.h"
 #include "gpio_freertos.h"
 /* HAL */
+#include "stm32f1xx_hal.h"
 #include "stm32f1xx_hal_spi.h"
 /* FreeRTOS */
 #include "FreeRTOS.h"
