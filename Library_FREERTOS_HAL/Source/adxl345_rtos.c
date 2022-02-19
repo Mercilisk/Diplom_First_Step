@@ -57,11 +57,11 @@ void adxl345_task(void const * argument)
 						Error_Handler();
 	
 	/* Registering interrupt handlers */
-	if(exti_freertos_register(htask->hadxl.int1.pin, adxl345_int1) != pdTRUE)
+	/*if(exti_freertos_register(htask->hadxl.int1.pin, adxl345_int1) != pdTRUE)
+		Error_Handler();*/
+	if(exti_freertos_register(htask->hadxl.int2.pin, adxl345_int2) != pdTRUE)
 		Error_Handler();
-/*	if(exti_freertos_register(htask->hadxl.int2.pin, adxl345_int2) != pdTRUE)
-		Error_Handler();
-*/
+
 	/* Notify than init complete */
 	xSemaphoreGive(htask->suspend_notify);
 

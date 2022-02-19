@@ -67,9 +67,9 @@ void Error_Handler(void);
 #define USART_RX_GPIO_Port GPIOA
 #define Green_Pin GPIO_PIN_5
 #define Green_GPIO_Port GPIOA
-#define GPIO_Int1_Accelerometer_Pin GPIO_PIN_10
-#define GPIO_Int1_Accelerometer_GPIO_Port GPIOA
-#define GPIO_Int1_Accelerometer_EXTI_IRQn EXTI15_10_IRQn
+#define GPIO_Int2_Accelerometer_Pin GPIO_PIN_10
+#define GPIO_Int2_Accelerometer_GPIO_Port GPIOA
+#define GPIO_Int2_Accelerometer_EXTI_IRQn EXTI15_10_IRQn
 #define TMS_Pin GPIO_PIN_13
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14

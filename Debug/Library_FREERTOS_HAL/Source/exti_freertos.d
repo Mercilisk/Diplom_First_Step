@@ -7,7 +7,7 @@ Library_FREERTOS_HAL/Source/exti_freertos.o: \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3/portmacro.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h \
- F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/exti_freertos.h \
+ C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/exti_freertos.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
 
@@ -25,7 +25,7 @@ Library_FREERTOS_HAL/Source/exti_freertos.o: \
 
 ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h:
 
-F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/exti_freertos.h:
+C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/exti_freertos.h:
 
 ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h:
 
