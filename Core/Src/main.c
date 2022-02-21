@@ -330,11 +330,11 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(SPI_CS_GPIO_Port, SPI_CS_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : B1_Pin */
-  GPIO_InitStruct.Pin = B1_Pin;
+  /*Configure GPIO pins : B1_Pin GPIO_Int2_Accelerometer_Pin */
+  GPIO_InitStruct.Pin = B1_Pin|GPIO_Int2_Accelerometer_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : Green_Pin */
   GPIO_InitStruct.Pin = Green_Pin;
@@ -343,11 +343,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(Green_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : GPIO_Int2_Accelerometer_Pin */
-  GPIO_InitStruct.Pin = GPIO_Int2_Accelerometer_Pin;
+  /*Configure GPIO pin : GPIO_Int1_Accelerometer_Pin */
+  GPIO_InitStruct.Pin = GPIO_Int1_Accelerometer_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIO_Int2_Accelerometer_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIO_Int1_Accelerometer_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : SPI_CS_Pin */
   GPIO_InitStruct.Pin = SPI_CS_Pin;
@@ -383,12 +383,14 @@ void ADXL345_Config()
 	ADXL.settings.offset.y 						=	0;
 	ADXL.settings.offset.z 						=	0;
 	//	Interrupt Settings
-	ADXL.settings.int_en 						=	/*ADXL345_INT_DATA_READY;//*/ADXL345_INT_WATERMARK;
-	ADXL.settings.map_to_int2 					=	/*ADXL345_INT_DATA_READY;//*/ADXL345_INT_WATERMARK;
+	ADXL.settings.int_en 						=	/*ADXL345_INT_DATA_READY;//*/ ADXL345_INT_WATERMARK | ADXL345_INT_OVERRUN;
+	ADXL.settings.map_to_int2 					=	/*ADXL345_INT_DATA_READY;//*/~ADXL345_INT_WATERMARK & ADXL345_INT_OVERRUN;
+	ADXL.int1.pin 								=	GPIO_Int1_Accelerometer_Pin;
+	ADXL.int1.port								=	GPIO_Int1_Accelerometer_GPIO_Port;
 	ADXL.int2.pin 								=	GPIO_Int2_Accelerometer_Pin;
 	ADXL.int2.port								=	GPIO_Int2_Accelerometer_GPIO_Port;
-	ADXL.settings.fifo_watermark 				=	/*0x00; //*/0x25;
-	ADXL.settings.fifo_mode 					=	/*ADXL345_FIFO_BYPASS; //*/ADXL345_FIFO_FIFO;
+	ADXL.settings.fifo_watermark 				=	0x00; //*/0x25;
+	ADXL.settings.fifo_mode 					=	ADXL345_FIFO_BYPASS; //*/ADXL345_FIFO_FIFO;
 	ADXL.settings.fifo_trigger 					=	ADXL345_FIFO_TRIG_INT1;
 	ADXL.mutex_timeout 							=	100;
 	ADXL.transfer_timeout 						=	100;
@@ -470,6 +472,7 @@ Start_Mesurments:
 	/* Infinite loop */
 	while(Index_Count <= Length_Realization)
 	{
+		adxl345_resume();
 		xQueueReceive(hadxl.fifo_frame_ptr_queue, &data, portMAX_DELAY);
 		Index_Count++;
 	}
