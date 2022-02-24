@@ -389,8 +389,8 @@ void ADXL345_Config()
 	ADXL.int1.port								=	GPIO_Int1_Accelerometer_GPIO_Port;
 	ADXL.int2.pin 								=	GPIO_Int2_Accelerometer_Pin;
 	ADXL.int2.port								=	GPIO_Int2_Accelerometer_GPIO_Port;
-	ADXL.settings.fifo_watermark 				=	0x00; //*/0x25;
-	ADXL.settings.fifo_mode 					=	ADXL345_FIFO_BYPASS; //*/ADXL345_FIFO_FIFO;
+	ADXL.settings.fifo_watermark 				=	/*0x00; //*/0x25;
+	ADXL.settings.fifo_mode 					=	/*ADXL345_FIFO_BYPASS; //*/ADXL345_FIFO_FIFO;
 	ADXL.settings.fifo_trigger 					=	ADXL345_FIFO_TRIG_INT1;
 	ADXL.mutex_timeout 							=	100;
 	ADXL.transfer_timeout 						=	100;
@@ -403,7 +403,7 @@ void ADXL345_Config()
 	adxl345_task_create(						"Task_ADXL345_RTOS",
 												osPriorityNormal,
 												0,
-												128,
+												512,
 												&hadxl);
 
 /*#ifdef 	Debug_Active
@@ -461,8 +461,8 @@ void UART_Cobs_Config(void)
 void ADXL345_Data_Collector_Task(void const * argument)
 {
   /* USER CODE BEGIN 5 */
-
-	adxl345_acc_offset_t	data[128];
+	float Signal[256];
+	adxl345_acc_data_t	data[128], *data_read;
 	uint16_t Index_Count;
 Start_Mesurments:
 
@@ -474,6 +474,10 @@ Start_Mesurments:
 	{
 		adxl345_resume();
 		xQueueReceive(hadxl.fifo_frame_ptr_queue, &data, portMAX_DELAY);
+		for (uint16_t i = 0; i<127; i++)
+		{
+			Signal[i] = adxl345_convert_float_mpss(data[i].y);
+		}
 		Index_Count++;
 	}
 

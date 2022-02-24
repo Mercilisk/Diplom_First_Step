@@ -370,7 +370,7 @@ spi_freertos_status spi_freertos_read_dma(spi_freertos_nss_t* spi,
 		spi->check_spi_conf_callback(spi->spi_rtos->hspi);
 	
 	/* NSS to low - start of transaction */
-	spi_freertos_nss_low(spi);
+	//spi_freertos_nss_low(spi);
 	
 	/* Command data DMA write from buffer */
 	if(cmd_size == 0) goto data_stage;
@@ -424,7 +424,7 @@ spi_freertos_status spi_freertos_read_dma(spi_freertos_nss_t* spi,
 	
 	end_of_transaction:
 	/* NSS to high - end of transaction */
-	spi_freertos_nss_high(spi);
+	//spi_freertos_nss_high(spi);
 	
 	/* Give back SPI mutex */
 	xSemaphoreGive(spi->spi_rtos->mutex);

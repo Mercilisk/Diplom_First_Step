@@ -5,6 +5,8 @@
 #include "semphr.h"
 #include "cmsis_os.h"
 
+#include "stm32f1xx_hal.h"
+
 #include "adxl345_rtos.h"
 #include "adxl345.h"
 #include "exti_freertos.h"
@@ -44,7 +46,7 @@ void adxl345_task(void const * argument)
 
 	/* Allocating FIFO memory  */
 	adxl345_acc_data_t *fifo = pvPortMalloc(htask->fifo_frame_size*
-		htask->fifo_frame_qty*sizeof(adxl345_acc_data_t));
+		htask->fifo_frame_qty*sizeof(adxl345_acc_data_t)), test[128];
 	if(fifo == NULL)
 		Error_Handler();
 	adxl345_acc_data_t *ptr_to_send = NULL;
@@ -57,8 +59,8 @@ void adxl345_task(void const * argument)
 						Error_Handler();
 	
 	/* Registering interrupt handlers */
-	/*if(exti_freertos_register(htask->hadxl.int1.pin, adxl345_int1) != pdTRUE)
-		Error_Handler();*/
+	if(exti_freertos_register(htask->hadxl.int1.pin, adxl345_int1) != pdTRUE)
+		Error_Handler();
 	if(exti_freertos_register(htask->hadxl.int2.pin, adxl345_int2) != pdTRUE)
 		Error_Handler();
 
@@ -112,10 +114,16 @@ void adxl345_task(void const * argument)
 			if(event & ADXL345_EXTI1)
 			{
 				/* Get burst of data from ADXL345 internal FIFO */
+
+				HAL_GPIO_WritePin(htask->hadxl.spi.nss.port, htask->hadxl.spi.nss.pin, GPIO_PIN_RESET);
+
 				for(i = 0; i < htask->hadxl.settings.fifo_watermark; i++)
 					adxl345_get_data(&(htask->hadxl),
 						&(fifo[frame_idx*htask->hadxl.settings.fifo_watermark +
 							sample_idx++]));
+
+				HAL_GPIO_WritePin(htask->hadxl.spi.nss.port, htask->hadxl.spi.nss.pin, GPIO_PIN_SET);
+
 				/* Generate interrupt event if FIFO watermark is still exceeded */
 				if(adxl345_get_int_src(&(htask->hadxl)) & ADXL345_INT_WATERMARK)
 					xTaskNotify(adxl345_task_id, ADXL345_EXTI1, eSetBits);
@@ -124,6 +132,7 @@ void adxl345_task(void const * argument)
 				{
 					sample_idx = 0;
 					ptr_to_send = &(fifo[frame_idx*htask->hadxl.settings.fifo_watermark]);
+					*test=fifo[frame_idx*htask->hadxl.settings.fifo_watermark];
 					xQueueSend(htask->fifo_frame_ptr_queue, &ptr_to_send, 0);
 					if(++frame_idx >= htask->fifo_frame_qty)
 						frame_idx = 0;
