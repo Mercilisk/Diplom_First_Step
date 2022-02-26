@@ -115,14 +115,10 @@ void adxl345_task(void const * argument)
 			{
 				/* Get burst of data from ADXL345 internal FIFO */
 
-				HAL_GPIO_WritePin(htask->hadxl.spi.nss.port, htask->hadxl.spi.nss.pin, GPIO_PIN_RESET);
-
 				for(i = 0; i < htask->hadxl.settings.fifo_watermark; i++)
 					adxl345_get_data(&(htask->hadxl),
 						&(fifo[frame_idx*htask->hadxl.settings.fifo_watermark +
 							sample_idx++]));
-
-				HAL_GPIO_WritePin(htask->hadxl.spi.nss.port, htask->hadxl.spi.nss.pin, GPIO_PIN_SET);
 
 				/* Generate interrupt event if FIFO watermark is still exceeded */
 				if(adxl345_get_int_src(&(htask->hadxl)) & ADXL345_INT_WATERMARK)
@@ -132,7 +128,6 @@ void adxl345_task(void const * argument)
 				{
 					sample_idx = 0;
 					ptr_to_send = &(fifo[frame_idx*htask->hadxl.settings.fifo_watermark]);
-					*test=fifo[frame_idx*htask->hadxl.settings.fifo_watermark];
 					xQueueSend(htask->fifo_frame_ptr_queue, &ptr_to_send, 0);
 					if(++frame_idx >= htask->fifo_frame_qty)
 						frame_idx = 0;

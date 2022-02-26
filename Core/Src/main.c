@@ -48,6 +48,7 @@
 
 #ifdef 		Debug_Active
 	#include 	"stdio.h"
+	#include 	<string.h>
 #endif
 /* USER CODE END Includes */
 
@@ -462,7 +463,7 @@ void ADXL345_Data_Collector_Task(void const * argument)
 {
   /* USER CODE BEGIN 5 */
 	float Signal[256];
-	adxl345_acc_data_t	data[128], *data_read;
+	adxl345_acc_data_t	data[128], data_read;
 	uint16_t Index_Count;
 Start_Mesurments:
 
@@ -473,7 +474,10 @@ Start_Mesurments:
 	while(Index_Count <= Length_Realization)
 	{
 		adxl345_resume();
-		xQueueReceive(hadxl.fifo_frame_ptr_queue, &data, portMAX_DELAY);
+		xQueueReceive(hadxl.fifo_frame_ptr_queue, &data_read, portMAX_DELAY);
+
+		memcpy (&data, &data_read, sizeof(data));
+
 		for (uint16_t i = 0; i<127; i++)
 		{
 			Signal[i] = adxl345_convert_float_mpss(data[i].y);

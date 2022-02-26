@@ -33,11 +33,11 @@ Library_FREERTOS_HAL/Source/adxl345.o: \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3/portmacro.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h \
- C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/adxl345.h \
+ F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/adxl345.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h \
- C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/gpio_freertos.h \
- C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/spi_freertos.h
+ F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/gpio_freertos.h \
+ F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/spi_freertos.h
 
 ../Core/Inc/main.h:
 
@@ -107,12 +107,12 @@ Library_FREERTOS_HAL/Source/adxl345.o: \
 
 ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h:
 
-C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/adxl345.h:
+F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/adxl345.h:
 
 ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h:
 
 ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:
 
-C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/gpio_freertos.h:
+F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/gpio_freertos.h:
 
-C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/spi_freertos.h:
+F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/spi_freertos.h:

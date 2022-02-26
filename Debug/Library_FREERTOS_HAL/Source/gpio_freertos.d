@@ -26,7 +26,7 @@ Library_FREERTOS_HAL/Source/gpio_freertos.o: \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
- C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/gpio_freertos.h
+ F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/gpio_freertos.h
 
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 
@@ -80,4 +80,4 @@ Library_FREERTOS_HAL/Source/gpio_freertos.o: \
 
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
 
-C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/gpio_freertos.h:
+F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/gpio_freertos.h:

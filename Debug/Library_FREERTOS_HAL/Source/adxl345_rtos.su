@@ -1,7 +1,7 @@
 adxl345_rtos.c:33:6:adxl345_task	800	static
-adxl345_rtos.c:156:12:adxl345_task_create	56	static
-adxl345_rtos.c:178:12:adxl345_suspend	16	static
-adxl345_rtos.c:184:12:adxl345_wait_for_init	16	static
-adxl345_rtos.c:189:6:adxl345_resume	8	static
-adxl345_rtos.c:194:13:adxl345_int1	24	static
-adxl345_rtos.c:201:13:adxl345_int2	24	static
+adxl345_rtos.c:151:12:adxl345_task_create	56	static
+adxl345_rtos.c:173:12:adxl345_suspend	16	static
+adxl345_rtos.c:179:12:adxl345_wait_for_init	16	static
+adxl345_rtos.c:184:6:adxl345_resume	8	static
+adxl345_rtos.c:189:13:adxl345_int1	24	static
+adxl345_rtos.c:196:13:adxl345_int2	24	static
