@@ -43,10 +43,10 @@ Library_FREERTOS_HAL/Source/uart_cobs_service.o: \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h \
- F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/uart_freertos.h \
- F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/cobs.h \
- F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/uart_cobs_service.h \
- F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/uart_freertos.h
+ C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/uart_freertos.h \
+ C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/cobs.h \
+ C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/uart_cobs_service.h \
+ C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/uart_freertos.h
 
 ../Core/Inc/main.h:
 
@@ -136,10 +136,10 @@ Library_FREERTOS_HAL/Source/uart_cobs_service.o: \
 
 ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h:
 
-F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/uart_freertos.h:
+C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/uart_freertos.h:
 
-F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/cobs.h:
+C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/cobs.h:
 
-F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/uart_cobs_service.h:
+C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/uart_cobs_service.h:
 
-F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/uart_freertos.h:
+C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/uart_freertos.h:

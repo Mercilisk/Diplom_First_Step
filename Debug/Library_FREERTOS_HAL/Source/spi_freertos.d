@@ -7,7 +7,7 @@ Library_FREERTOS_HAL/Source/spi_freertos.o: \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3/portmacro.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h \
- F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/spi_freertos.h \
+ C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/spi_freertos.h \
  ../Core/Inc/main.h ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  ../Core/Inc/stm32f1xx_hal_conf.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
@@ -34,7 +34,7 @@ Library_FREERTOS_HAL/Source/spi_freertos.o: \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
- F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/gpio_freertos.h \
+ C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/gpio_freertos.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
 
@@ -52,7 +52,7 @@ Library_FREERTOS_HAL/Source/spi_freertos.o: \
 
 ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h:
 
-F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/spi_freertos.h:
+C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/spi_freertos.h:
 
 ../Core/Inc/main.h:
 
@@ -108,7 +108,7 @@ F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/spi_free
 
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
 
-F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/gpio_freertos.h:
+C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/gpio_freertos.h:
 
 ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h:
 

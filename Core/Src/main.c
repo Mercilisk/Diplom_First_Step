@@ -164,7 +164,7 @@ int main(void)
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   ADXL345_Config();
-  //UART_Cobs_Config();
+  UART_Cobs_Config();
   /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
@@ -400,7 +400,7 @@ void ADXL345_Config()
 
 	hadxl.hadxl 								=	ADXL;
 	hadxl.fifo_frame_size 						=	128;
-	hadxl.fifo_frame_qty 						=	8;
+	hadxl.fifo_frame_qty 						=	2;
 	adxl345_task_create(						"Task_ADXL345_RTOS",
 												osPriorityNormal,
 												0,
@@ -462,8 +462,8 @@ void UART_Cobs_Config(void)
 void ADXL345_Data_Collector_Task(void const * argument)
 {
   /* USER CODE BEGIN 5 */
-	float Signal[256];
-	adxl345_acc_data_t	data[128], data_read;
+	float Signal[Length_Realization];
+	adxl345_acc_data_t	data[128], *data_read;
 	uint16_t Index_Count;
 Start_Mesurments:
 
@@ -476,16 +476,17 @@ Start_Mesurments:
 		adxl345_resume();
 		xQueueReceive(hadxl.fifo_frame_ptr_queue, &data_read, portMAX_DELAY);
 
-		memcpy (&data, &data_read, sizeof(data));
+		memcpy(&data, data_read, sizeof(data));
 
-		for (uint16_t i = 0; i<127; i++)
+		for (uint16_t i = 0; i<127 && Index_Count <= Length_Realization; i++)
 		{
-			Signal[i] = adxl345_convert_float_mpss(data[i].y);
+			Signal[Index_Count] = adxl345_convert_float_mpss( data[i].y);
+
+			Index_Count++;
 		}
-		Index_Count++;
 	}
 
-	//uart_cobs_send(&Cobs_UART, &Signal, Length_Realization, 10 * portTICK_PERIOD_MS);
+	uart_cobs_send(&Cobs_UART, &Signal, Length_Realization, 10 * portTICK_PERIOD_MS);
 	goto Start_Mesurments;
   /* USER CODE END 5 */
 }

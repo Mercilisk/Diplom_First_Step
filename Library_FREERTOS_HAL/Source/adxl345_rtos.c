@@ -46,7 +46,8 @@ void adxl345_task(void const * argument)
 
 	/* Allocating FIFO memory  */
 	adxl345_acc_data_t *fifo = pvPortMalloc(htask->fifo_frame_size*
-		htask->fifo_frame_qty*sizeof(adxl345_acc_data_t)), test[128];
+		htask->fifo_frame_qty*sizeof(adxl345_acc_data_t));
+
 	if(fifo == NULL)
 		Error_Handler();
 	adxl345_acc_data_t *ptr_to_send = NULL;
@@ -119,7 +120,6 @@ void adxl345_task(void const * argument)
 					adxl345_get_data(&(htask->hadxl),
 						&(fifo[frame_idx*htask->hadxl.settings.fifo_watermark +
 							sample_idx++]));
-
 				/* Generate interrupt event if FIFO watermark is still exceeded */
 				if(adxl345_get_int_src(&(htask->hadxl)) & ADXL345_INT_WATERMARK)
 					xTaskNotify(adxl345_task_id, ADXL345_EXTI1, eSetBits);
@@ -127,6 +127,7 @@ void adxl345_task(void const * argument)
 				if(sample_idx >= htask->fifo_frame_size)
 				{
 					sample_idx = 0;
+					sample_idx=1;
 					ptr_to_send = &(fifo[frame_idx*htask->hadxl.settings.fifo_watermark]);
 					xQueueSend(htask->fifo_frame_ptr_queue, &ptr_to_send, 0);
 					if(++frame_idx >= htask->fifo_frame_qty)

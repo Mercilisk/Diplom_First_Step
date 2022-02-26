@@ -35,7 +35,7 @@ Library_FREERTOS_HAL/Source/uart_freertos.o: \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h \
- F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/uart_freertos.h
+ C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/uart_freertos.h
 
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 
@@ -107,4 +107,4 @@ Library_FREERTOS_HAL/Source/uart_freertos.o: \
 
 ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:
 
-F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/uart_freertos.h:
+C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/uart_freertos.h:
