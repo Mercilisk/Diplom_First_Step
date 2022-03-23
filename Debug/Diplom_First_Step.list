@@ -37,13 +37,13 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_macro  0001aeaf  00000000  00000000  00047330  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00019ce4  00000000  00000000  000621df  2**0
+ 17 .debug_line   0001af24  00000000  00000000  000621df  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    0009688c  00000000  00000000  0007bec3  2**0
+ 18 .debug_str    00096873  00000000  00000000  0007d103  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000053  00000000  00000000  0011274f  2**0
+ 19 .comment      00000053  00000000  00000000  00113976  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  0000629c  00000000  00000000  001127a4  2**2
+ 20 .debug_frame  0000629c  00000000  00000000  001139cc  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1118,9 +1118,9 @@ static void MX_USART2_UART_Init(void)
  8000b5c:	4b11      	ldr	r3, [pc, #68]	; (8000ba4 <MX_USART2_UART_Init+0x4c>)
  8000b5e:	4a12      	ldr	r2, [pc, #72]	; (8000ba8 <MX_USART2_UART_Init+0x50>)
  8000b60:	601a      	str	r2, [r3, #0]
-  huart2.Init.BaudRate = 115200;
+  huart2.Init.BaudRate = 28800;
  8000b62:	4b10      	ldr	r3, [pc, #64]	; (8000ba4 <MX_USART2_UART_Init+0x4c>)
- 8000b64:	f44f 32e1 	mov.w	r2, #115200	; 0x1c200
+ 8000b64:	f44f 42e1 	mov.w	r2, #28800	; 0x7080
  8000b68:	605a      	str	r2, [r3, #4]
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
  8000b6a:	4b0e      	ldr	r3, [pc, #56]	; (8000ba4 <MX_USART2_UART_Init+0x4c>)
@@ -1619,14 +1619,14 @@ void UART_Cobs_Config(void)
 	uart_cobs_service_tx_create(					"Task_uart_cobs_service_tx",
  8000ed6:	4b16      	ldr	r3, [pc, #88]	; (8000f30 <UART_Cobs_Config+0x60>)
  8000ed8:	9300      	str	r3, [sp, #0]
- 8000eda:	f44f 7380 	mov.w	r3, #256	; 0x100
+ 8000eda:	f44f 7300 	mov.w	r3, #512	; 0x200
  8000ede:	2200      	movs	r2, #0
  8000ee0:	2100      	movs	r1, #0
  8000ee2:	4814      	ldr	r0, [pc, #80]	; (8000f34 <UART_Cobs_Config+0x64>)
  8000ee4:	f005 f868 	bl	8005fb8 <uart_cobs_service_tx_create>
 													osPriorityNormal,
 													0,
-													256,
+													512,
 													&Cobs_UART
 								);
 	Cobs_UART.huart 								=	(uart_freertos_t*) pvPortMalloc(sizeof(uart_freertos_t));
@@ -1702,7 +1702,7 @@ Start_Mesurments:
 	//adxl345_start(&ADXL);
 
 	/* Infinite loop */
-	while(Index_Count <= Length_Realization)
+	while(Index_Count < Length_Realization)
  8000f5a:	e064      	b.n	8001026 <ADXL345_Data_Collector_Task+0xea>
 	{
 		adxl345_resume();
@@ -1728,7 +1728,7 @@ Start_Mesurments:
  8000f8c:	461a      	mov	r2, r3
  8000f8e:	f007 fe63 	bl	8008c58 <memcpy>
 
-		for (uint16_t i = 0; i<127 && Index_Count <= Length_Realization; i++)
+		for (uint16_t i = 0; i < 127 && Index_Count < Length_Realization; i++, Index_Count++)
  8000f92:	2300      	movs	r3, #0
  8000f94:	f507 5298 	add.w	r2, r7, #4864	; 0x1300
  8000f98:	f102 020c 	add.w	r2, r2, #12
@@ -1757,22 +1757,20 @@ Start_Mesurments:
  8000fd2:	f507 7344 	add.w	r3, r7, #784	; 0x310
  8000fd6:	3b04      	subs	r3, #4
  8000fd8:	f843 2024 	str.w	r2, [r3, r4, lsl #2]
-
-			Index_Count++;
+		for (uint16_t i = 0; i < 127 && Index_Count < Length_Realization; i++, Index_Count++)
  8000fdc:	f507 5398 	add.w	r3, r7, #4864	; 0x1300
- 8000fe0:	f103 030e 	add.w	r3, r3, #14
+ 8000fe0:	f103 030c 	add.w	r3, r3, #12
  8000fe4:	881b      	ldrh	r3, [r3, #0]
  8000fe6:	3301      	adds	r3, #1
  8000fe8:	f507 5298 	add.w	r2, r7, #4864	; 0x1300
- 8000fec:	f102 020e 	add.w	r2, r2, #14
+ 8000fec:	f102 020c 	add.w	r2, r2, #12
  8000ff0:	8013      	strh	r3, [r2, #0]
-		for (uint16_t i = 0; i<127 && Index_Count <= Length_Realization; i++)
  8000ff2:	f507 5398 	add.w	r3, r7, #4864	; 0x1300
- 8000ff6:	f103 030c 	add.w	r3, r3, #12
+ 8000ff6:	f103 030e 	add.w	r3, r3, #14
  8000ffa:	881b      	ldrh	r3, [r3, #0]
  8000ffc:	3301      	adds	r3, #1
  8000ffe:	f507 5298 	add.w	r2, r7, #4864	; 0x1300
- 8001002:	f102 020c 	add.w	r2, r2, #12
+ 8001002:	f102 020e 	add.w	r2, r2, #14
  8001006:	8013      	strh	r3, [r2, #0]
  8001008:	f507 5398 	add.w	r3, r7, #4864	; 0x1300
  800100c:	f103 030c 	add.w	r3, r3, #12
@@ -1783,14 +1781,16 @@ Start_Mesurments:
  800101a:	f103 030e 	add.w	r3, r3, #14
  800101e:	881b      	ldrh	r3, [r3, #0]
  8001020:	f5b3 6f80 	cmp.w	r3, #1024	; 0x400
- 8001024:	d9bc      	bls.n	8000fa0 <ADXL345_Data_Collector_Task+0x64>
-	while(Index_Count <= Length_Realization)
+ 8001024:	d3bc      	bcc.n	8000fa0 <ADXL345_Data_Collector_Task+0x64>
+	while(Index_Count < Length_Realization)
  8001026:	f507 5398 	add.w	r3, r7, #4864	; 0x1300
  800102a:	f103 030e 	add.w	r3, r3, #14
  800102e:	881b      	ldrh	r3, [r3, #0]
  8001030:	f5b3 6f80 	cmp.w	r3, #1024	; 0x400
- 8001034:	d992      	bls.n	8000f5c <ADXL345_Data_Collector_Task+0x20>
+ 8001034:	d392      	bcc.n	8000f5c <ADXL345_Data_Collector_Task+0x20>
+
 		}
+
 	}
 
 	uart_cobs_send(&Cobs_UART, &Signal, Length_Realization, 10 * portTICK_PERIOD_MS);

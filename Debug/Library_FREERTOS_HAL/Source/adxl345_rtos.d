@@ -43,12 +43,12 @@ Library_FREERTOS_HAL/Source/adxl345_rtos.o: \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h \
- C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/adxl345_rtos.h \
- C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/adxl345.h \
- C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/gpio_freertos.h \
- C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/spi_freertos.h \
- C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/adxl345.h \
- C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/exti_freertos.h
+ F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/adxl345_rtos.h \
+ F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/adxl345.h \
+ F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/gpio_freertos.h \
+ F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/spi_freertos.h \
+ F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/adxl345.h \
+ F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/exti_freertos.h
 
 ../Core/Inc/main.h:
 
@@ -138,14 +138,14 @@ Library_FREERTOS_HAL/Source/adxl345_rtos.o: \
 
 ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h:
 
-C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/adxl345_rtos.h:
+F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/adxl345_rtos.h:
 
-C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/adxl345.h:
+F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/adxl345.h:
 
-C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/gpio_freertos.h:
+F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/gpio_freertos.h:
 
-C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/spi_freertos.h:
+F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/spi_freertos.h:
 
-C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/adxl345.h:
+F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/adxl345.h:
 
-C:/Users/Professional/Desktop/AShershunovich-RF18/First_Step_Diplom/Library_FREERTOS_HAL/Include/exti_freertos.h:
+F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/exti_freertos.h:

@@ -274,7 +274,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
+  huart2.Init.BaudRate = 28800;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
@@ -430,7 +430,7 @@ void UART_Cobs_Config(void)
 	uart_cobs_service_tx_create(					"Task_uart_cobs_service_tx",
 													osPriorityNormal,
 													0,
-													256,
+													512,
 													&Cobs_UART
 								);
 	Cobs_UART.huart 								=	(uart_freertos_t*) pvPortMalloc(sizeof(uart_freertos_t));
@@ -471,19 +471,19 @@ Start_Mesurments:
 	//adxl345_start(&ADXL);
 
 	/* Infinite loop */
-	while(Index_Count <= Length_Realization)
+	while(Index_Count < Length_Realization)
 	{
 		adxl345_resume();
 		xQueueReceive(hadxl.fifo_frame_ptr_queue, &data_read, portMAX_DELAY);
 
 		memcpy(&data, data_read, sizeof(data));
 
-		for (uint16_t i = 0; i<127 && Index_Count <= Length_Realization; i++)
+		for (uint16_t i = 0; i < 127 && Index_Count < Length_Realization; i++, Index_Count++)
 		{
 			Signal[Index_Count] = adxl345_convert_float_mpss( data[i].y);
 
-			Index_Count++;
 		}
+
 	}
 
 	uart_cobs_send(&Cobs_UART, &Signal, Length_Realization, 10 * portTICK_PERIOD_MS);
