@@ -1,6 +1,8 @@
 uart_cobs_service.c:12:8:uart_cobs_send	32	static
 uart_cobs_service.c:26:8:uart_cobs_recv	32	static
-uart_cobs_service.c:36:6:uart_cobs_service_rx_task	56	static
-uart_cobs_service.c:107:6:uart_cobs_service_tx_task	48	static
-uart_cobs_service.c:143:12:uart_cobs_service_rx_create	56	static
-uart_cobs_service.c:159:12:uart_cobs_service_tx_create	56	static
+uart_cobs_service.c:40:6:uart_cobs_service_rx_task	48	static
+uart_cobs_service.c:114:6:uart_cobs_service_tx_task	48	static
+uart_cobs_service.c:153:12:uart_cobs_service_rx_create	56	static
+uart_cobs_service.c:172:12:uart_cobs_service_tx_create	56	static
+uart_cobs_service.c:191:6:uart_cobs_service_rx_free	8	static
+uart_cobs_service.c:208:6:uart_cobs_service_tx_free	8	static

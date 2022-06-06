@@ -62,8 +62,8 @@ static exti_freertos_list_t* exti_freertos_list_append(uint16_t pin,
 	{
 		exti_freertos_list_t *item = exti_freertos_list_begin;
 		while(item->next != NULL)
-			item = item->next;
-		item->next = new_item;
+			item = (exti_freertos_list_t *) item->next;
+		item->next = (struct exti_freertos_list_t *) new_item;
 	}
 	return new_item;
 }
@@ -78,13 +78,13 @@ static exti_freertos_list_t* exti_freertos_list_delete(uint16_t pin)
 		/* if item found, delete and replace next item pointer */
 		if(item->next->pin == pin)
 		{
-			tmp = item->next;
+			tmp = (exti_freertos_list_t *) item->next;
 			item->next = tmp->next;
 			vPortFree(tmp);
 			break;
 		}
 		else
-			item = item->next;
+			item = (exti_freertos_list_t *) item->next;
 	}
 	return item;
 }
@@ -97,7 +97,7 @@ exti_freertos_list_t* exti_freertos_find_item(uint16_t pin)
 	{
 		if(item->pin == pin)
 			break;
-		item = item->next;
+		item = (exti_freertos_list_t *) item->next;
 	}
 	return item;
 }

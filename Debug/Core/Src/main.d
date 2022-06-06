@@ -50,7 +50,10 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/gpio_freertos.h \
  F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/spi_freertos.h \
  F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/adxl345_rtos.h \
- F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/adxl345.h
+ F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/adxl345.h \
+ F:/STM32CubeIDE/Projects/Diplom_First_Step/Core/Inc/Task_Include/Collector_Math_Task.h \
+ F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_math/Include/FFT_FREERTOS.h \
+ F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_math/Include/Compl_FREERTOS.h
 
 ../Core/Inc/main.h:
 
@@ -157,3 +160,9 @@ F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/spi_free
 F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/adxl345_rtos.h:
 
 F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_FREERTOS_HAL/Include/adxl345.h:
+
+F:/STM32CubeIDE/Projects/Diplom_First_Step/Core/Inc/Task_Include/Collector_Math_Task.h:
+
+F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_math/Include/FFT_FREERTOS.h:
+
+F:/STM32CubeIDE/Projects/Diplom_First_Step/Library_math/Include/Compl_FREERTOS.h:

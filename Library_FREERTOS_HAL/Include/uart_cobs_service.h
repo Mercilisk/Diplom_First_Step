@@ -39,6 +39,7 @@ typedef struct __packed
 	uart_cobs_mode_t	mode;
 	QueueHandle_t		input_queue;
 	QueueHandle_t		output_queue;
+	SemaphoreHandle_t 	Transmit_Ready;
 } uart_cobs_service_t;
 
 /*----------------------------------------------------------------------
@@ -59,6 +60,10 @@ osThreadId uart_cobs_service_tx_create(char *name, osPriority priority,
 /* task routines */
 void uart_cobs_service_rx_task(void const * argument);
 void uart_cobs_service_tx_task(void const * argument);
+
+/* task delete */
+void uart_cobs_service_rx_free(void);
+void uart_cobs_service_tx_free(void);
 
 #ifdef __cplusplus
 }

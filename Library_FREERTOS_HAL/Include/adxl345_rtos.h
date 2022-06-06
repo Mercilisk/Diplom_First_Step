@@ -40,6 +40,8 @@ osThreadId adxl345_task_create(char *name, osPriority priority,
 
 /* ADXL345 task routine */
 void adxl345_task(void const * argument);
+/* task delete */
+void adxl345_task_free(void);
 
 BaseType_t adxl345_suspend(TickType_t timeout);
 void adxl345_resume(void);

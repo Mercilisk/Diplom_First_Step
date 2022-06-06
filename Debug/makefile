@@ -13,9 +13,12 @@ RM := rm -rf
 -include Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3/subdir.mk
 -include Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/subdir.mk
 -include Middlewares/Third_Party/FreeRTOS/Source/subdir.mk
+-include Library_math/Source/subdir.mk
+-include Library_math/Include/subdir.mk
 -include Library_FREERTOS_HAL/Source/subdir.mk
 -include Drivers/STM32F1xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
+-include Core/Src/Task_Source/subdir.mk
 -include Core/Src/subdir.mk
 -include subdir.mk
 -include objects.mk

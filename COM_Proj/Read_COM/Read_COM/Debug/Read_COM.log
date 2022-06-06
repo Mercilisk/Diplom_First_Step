@@ -1,0 +1,14 @@
+﻿Построение начато 06.06.2022 13:44:27.
+     1>Проект "F:\STM32CubeIDE\Projects\Diplom_First_Step\COM_Proj\Read_COM\Read_COM\Read_COM.vcxproj" в узле 2 (целевые объекты Build).
+     1>ClCompile:
+         C:\Program Files (x86)\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\Read_COM.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Read_COM.cpp
+         Read_COM.cpp
+       Link:
+         C:\Program Files (x86)\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"F:\STM32CubeIDE\Projects\Diplom_First_Step\COM_Proj\Read_COM\Debug\Read_COM.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"F:\STM32CubeIDE\Projects\Diplom_First_Step\COM_Proj\Read_COM\Debug\Read_COM.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"F:\STM32CubeIDE\Projects\Diplom_First_Step\COM_Proj\Read_COM\Debug\Read_COM.lib" /MACHINE:X86 Debug\Read_COM.obj
+         Debug\stdafx.obj
+         Read_COM.vcxproj -> F:\STM32CubeIDE\Projects\Diplom_First_Step\COM_Proj\Read_COM\Debug\Read_COM.exe
+     1>Построение проекта "F:\STM32CubeIDE\Projects\Diplom_First_Step\COM_Proj\Read_COM\Read_COM\Read_COM.vcxproj" завершено (целевые объекты Build).
+
+Построение успешно завершено.
+
+Затраченное время: 00:00:03.43

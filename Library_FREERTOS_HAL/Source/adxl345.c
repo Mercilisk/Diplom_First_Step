@@ -63,7 +63,6 @@ adxl345_status adxl345_init(adxl345_handle_t* hadxl)
 		(void *) &(hadxl->settings.data_rate),
 		sizeof(hadxl->settings.data_rate));
 	if(ret != ADXL345_OK) return ret;
-	
 	/* Data format */
 	reg = 	hadxl->settings.meas_range | hadxl->settings.align |
 			hadxl->settings.resolution;

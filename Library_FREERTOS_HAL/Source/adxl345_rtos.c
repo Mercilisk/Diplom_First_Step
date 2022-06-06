@@ -27,8 +27,9 @@ typedef enum
 
 static void adxl345_int1(uint16_t pin, BaseType_t* pxHigherPriorityTaskWoken);
 static void adxl345_int2(uint16_t pin, BaseType_t* pxHigherPriorityTaskWoken);
-static osThreadId adxl345_task_id;
+static osThreadId adxl345_task_id = NULL;
 static adxl345_task_handle_t* htask;
+static adxl345_acc_data_t  *fifo_accelerometer_rx;
 
 void adxl345_task(void const * argument)
 {	
@@ -45,10 +46,10 @@ void adxl345_task(void const * argument)
 		Error_Handler();
 
 	/* Allocating FIFO memory  */
-	adxl345_acc_data_t *fifo = pvPortMalloc(htask->fifo_frame_size*
+	fifo_accelerometer_rx = pvPortMalloc(htask->fifo_frame_size*
 		htask->fifo_frame_qty*sizeof(adxl345_acc_data_t));
 
-	if(fifo == NULL)
+	if(fifo_accelerometer_rx == NULL)
 		Error_Handler();
 	adxl345_acc_data_t *ptr_to_send = NULL;
 	
@@ -118,7 +119,7 @@ void adxl345_task(void const * argument)
 
 				for(i = 0; i < htask->hadxl.settings.fifo_watermark; i++)
 					adxl345_get_data(&(htask->hadxl),
-						&(fifo[frame_idx*htask->hadxl.settings.fifo_watermark +
+						&(fifo_accelerometer_rx[frame_idx*htask->hadxl.settings.fifo_watermark +
 							sample_idx++]));
 				/* Generate interrupt event if FIFO watermark is still exceeded */
 				if(adxl345_get_int_src(&(htask->hadxl)) & ADXL345_INT_WATERMARK)
@@ -128,7 +129,7 @@ void adxl345_task(void const * argument)
 				{
 					sample_idx = 0;
 					sample_idx=1;
-					ptr_to_send = &(fifo[frame_idx*htask->hadxl.settings.fifo_watermark]);
+					ptr_to_send = &(fifo_accelerometer_rx[frame_idx*htask->hadxl.settings.fifo_watermark]);
 					xQueueSend(htask->fifo_frame_ptr_queue, &ptr_to_send, 0);
 					if(++frame_idx >= htask->fifo_frame_qty)
 						frame_idx = 0;
@@ -166,8 +167,9 @@ osThreadId adxl345_task_create(char *name, osPriority priority,
 		.instances	= instances,
 		.stacksize	= stack_size
 	};
-
+	taskENTER_CRITICAL();
 	adxl345_task_id = osThreadCreate(&thread, (void *) htask);
+	taskEXIT_CRITICAL();
 	return adxl345_task_id;
 }
 
@@ -193,9 +195,21 @@ static void adxl345_int1(uint16_t pin, BaseType_t* pxHigherPriorityTaskWoken)
 		pxHigherPriorityTaskWoken);
 }
 
-
 static void adxl345_int2(uint16_t pin, BaseType_t* pxHigherPriorityTaskWoken)
 {
 	xTaskNotifyFromISR(adxl345_task_id, ADXL345_EXTI2, eSetBits,
 		pxHigherPriorityTaskWoken);
+}
+
+void adxl345_task_free(void)
+{
+	if (fifo_accelerometer_rx != NULL)
+	{
+		vPortFree(fifo_accelerometer_rx);
+	}
+	if (adxl345_task_id != NULL)
+	{
+		osThreadTerminate(adxl345_task_id);
+		adxl345_task_id = NULL;
+	}
 }

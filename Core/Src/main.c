@@ -43,8 +43,10 @@
 /*	Acceleration sensor	*/
 #include 	"adxl345.h"
 #include 	"adxl345_rtos.h"
+/*	Task	*/
+#include 	"Collector_Math_Task.h"
 
-#define 	Debug_Active
+//#define 	Debug_Active
 
 #ifdef 		Debug_Active
 	#include 	"stdio.h"
@@ -59,8 +61,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
-#define Length_Realization 		((uint16_t) 1024)
 
 /* USER CODE END PD */
 
@@ -79,11 +79,12 @@ UART_HandleTypeDef huart2;
 osThreadId defaultTaskHandle;
 /* USER CODE BEGIN PV */
 
-uart_cobs_service_t 	Cobs_UART;
+uart_cobs_service_t 		Cobs_UART;
 
-adxl345_handle_t 		ADXL;
-adxl345_task_handle_t 	hadxl;
-spi_freertos_t			spi_rtos;
+adxl345_handle_t 			hadxl_settings;
+adxl345_task_handle_t 		hadxl_task;
+spi_freertos_t				spi_rtos;
+User_Data_Settings_TypeDef  Setting_TypeDef;
 
 /* USER CODE END PV */
 
@@ -93,11 +94,9 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_DMA_Init(void);
 static void MX_SPI2_Init(void);
-void ADXL345_Data_Collector_Task(void const * argument);
+void Settings_Controll_Task(void const * argument);
 
 /* USER CODE BEGIN PFP */
-void ADXL345_Config(void);
-void UART_Cobs_Config(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -158,13 +157,11 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, ADXL345_Data_Collector_Task, osPriorityNormal, 0, 1536);
+  osThreadDef(defaultTask, Settings_Controll_Task, osPriorityAboveNormal, 0, 128);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  ADXL345_Config();
-  UART_Cobs_Config();
   /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
@@ -274,7 +271,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 28800;
+  huart2.Init.BaudRate = 115200;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
@@ -364,84 +361,7 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void ADXL345_Config()
-{
 
-	ADXL.spi.spi_rtos							=	&spi_rtos;
-	ADXL.spi.spi_rtos->hspi 					=	&hspi2;
-	if(spi_freertos_init(ADXL.spi.spi_rtos) == SPI_FREERTOS_EXIST)
-	{
-		Error_Handler();
-	}
-	ADXL.spi.nss.pin							=	SPI_CS_Pin;
-	ADXL.spi.nss.port 							=	SPI_CS_GPIO_Port;
-	ADXL.settings.data_rate 					=	ADXL345_DATARATE_3200_HZ;
-	ADXL.settings.meas_range					=	ADXL345_RANGE_16_G;
-	ADXL.settings.align							=	ADXL345_ALIGN_LSB;
-	ADXL.settings.resolution 					=	ADXL345_RESOLUTION_FULL;
-	//	Offset Parameter
-	ADXL.settings.offset.x 						=	0;
-	ADXL.settings.offset.y 						=	0;
-	ADXL.settings.offset.z 						=	0;
-	//	Interrupt Settings
-	ADXL.settings.int_en 						=	/*ADXL345_INT_DATA_READY;//*/ ADXL345_INT_WATERMARK | ADXL345_INT_OVERRUN;
-	ADXL.settings.map_to_int2 					=	/*ADXL345_INT_DATA_READY;//*/~ADXL345_INT_WATERMARK & ADXL345_INT_OVERRUN;
-	ADXL.int1.pin 								=	GPIO_Int1_Accelerometer_Pin;
-	ADXL.int1.port								=	GPIO_Int1_Accelerometer_GPIO_Port;
-	ADXL.int2.pin 								=	GPIO_Int2_Accelerometer_Pin;
-	ADXL.int2.port								=	GPIO_Int2_Accelerometer_GPIO_Port;
-	ADXL.settings.fifo_watermark 				=	/*0x00; //*/0x25;
-	ADXL.settings.fifo_mode 					=	/*ADXL345_FIFO_BYPASS; //*/ADXL345_FIFO_FIFO;
-	ADXL.settings.fifo_trigger 					=	ADXL345_FIFO_TRIG_INT1;
-	ADXL.mutex_timeout 							=	100;
-	ADXL.transfer_timeout 						=	100;
-
-	//	Configurate FREE RTOS AND ADXL345
-
-	hadxl.hadxl 								=	ADXL;
-	hadxl.fifo_frame_size 						=	128;
-	hadxl.fifo_frame_qty 						=	2;
-	adxl345_task_create(						"Task_ADXL345_RTOS",
-												osPriorityNormal,
-												0,
-												512,
-												&hadxl);
-
-/*#ifdef 	Debug_Active
-	if (adxl345_init(&ADXL) != ADXL345_OK)
-	{
-		perror("Error: Accelerometer is not found");
-		while(1)
-		{
-		}
-	}
-#else*/
-	/*	Find Accelerometer ADXL345	*/
-	/*while(adxl345_init(&ADXL) != ADXL345_OK)
-	{
-	}
-#endif*/
-
-}
-
-void UART_Cobs_Config(void)
-{
-
-	uart_cobs_service_tx_create(					"Task_uart_cobs_service_tx",
-													osPriorityNormal,
-													0,
-													512,
-													&Cobs_UART
-								);
-	Cobs_UART.huart 								=	(uart_freertos_t*) pvPortMalloc(sizeof(uart_freertos_t));
-	uart_freertos_init(								Cobs_UART.huart
-					  );
-	Cobs_UART.max_frame_size 						=	(size_t) Length_Realization;
-	Cobs_UART.huart -> huart						=	(UART_HandleTypeDef *) &huart2;
-	Cobs_UART.queue_depth 							=	1;
-	Cobs_UART.mode 									=	UART_COBS_INTERRUPT;
-
-}
 
 /*void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
@@ -452,42 +372,249 @@ void UART_Cobs_Config(void)
 }*/
 /* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_ADXL345_Data_Collector_Task */
+/* USER CODE BEGIN Header_Settings_Controll_Task */
 /**
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used
-  * @retval None
-  */
-/* USER CODE END Header_ADXL345_Data_Collector_Task */
-void ADXL345_Data_Collector_Task(void const * argument)
+* @brief Function implementing the myTask02 thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_Settings_Controll_Task */
+void Settings_Controll_Task(void const * argument)
 {
   /* USER CODE BEGIN 5 */
-	float Signal[Length_Realization];
-	adxl345_acc_data_t	data[128], *data_read;
-	uint16_t Index_Count;
-Start_Mesurments:
-
-	Index_Count 					= 	0;
-	//adxl345_start(&ADXL);
-
-	/* Infinite loop */
-	while(Index_Count < Length_Realization)
+	//-----------------------------------------------------------------------------------------------//
+	//---------------------------Base Configuration Accelerometr Struct------------------------------//
+	//---------------------------**************************************------------------------------//
+	//										SPI CONFIG												 //
+	//***********************************************************************************************//
+	hadxl_settings.spi.spi_rtos			=	&spi_rtos;
+	hadxl_settings.spi.spi_rtos->hspi	=	&hspi2;
+	if(spi_freertos_init(hadxl_settings.spi.spi_rtos) == SPI_FREERTOS_EXIST)
 	{
-		adxl345_resume();
-		xQueueReceive(hadxl.fifo_frame_ptr_queue, &data_read, portMAX_DELAY);
+		Error_Handler();
+	}
+	hadxl_settings.spi.nss.pin			=	SPI_CS_Pin;
+	hadxl_settings.spi.nss.port 		=	SPI_CS_GPIO_Port;
+	//***********************************************************************************************//
+	//							        Format Read Accelertion										 //
+	//***********************************************************************************************//
+	hadxl_settings.settings.align		=	ADXL345_ALIGN_LSB;
+	hadxl_settings.settings.resolution	=	ADXL345_RESOLUTION_FULL;
+	//***********************************************************************************************//
+	//							   Settings FIFO Buffer in accelerometr								 //
+	//***********************************************************************************************//
+	hadxl_settings.
+				settings.fifo_watermark =	0x25;
+	hadxl_settings.settings.fifo_mode 	=	ADXL345_FIFO_FIFO;
+	hadxl_settings.settings.fifo_trigger=	ADXL345_FIFO_TRIG_INT1;
+	//***********************************************************************************************//
+	//					Interrupt Settings, GPIO Configuration, FREERTOS Controll					 //
+	//***********************************************************************************************//
+	hadxl_settings.settings.int_en 		=	ADXL345_INT_WATERMARK | ADXL345_INT_OVERRUN;
+	hadxl_settings.settings.map_to_int2	=  ~ADXL345_INT_WATERMARK & ADXL345_INT_OVERRUN;
+	hadxl_settings.int1.pin 			=	GPIO_Int1_Accelerometer_Pin;
+	hadxl_settings.int1.port			=	GPIO_Int1_Accelerometer_GPIO_Port;
+	hadxl_settings.int2.pin 			=	GPIO_Int2_Accelerometer_Pin;
+	hadxl_settings.int2.port			=	GPIO_Int2_Accelerometer_GPIO_Port;
+	hadxl_settings.mutex_timeout 		=	100;
+	hadxl_settings.transfer_timeout 	=	100;
+	//---------------------------**************************************------------------------------//
+	//----------------------------Start Configure Settigs Task Struct--------------------------------//
+	//-----------------------------------------------------------------------------------------------//
+	Setting_TypeDef.Length_Realization	=	0;
+	Setting_TypeDef.FStatus 			= 	Enable_Time;
+	Setting_TypeDef.hadxl 				=	&hadxl_task;
+					 hadxl_task.hadxl 	=	hadxl_settings;
+					 hadxl_task.
+					 	 fifo_frame_size=	128;
+					 hadxl_task.
+					 	 fifo_frame_qty =	2;
+	Setting_TypeDef.TempStatus 			=	Temp_Enable;
+	Setting_TypeDef.X_Axis  			=	Disable;
+	Setting_TypeDef.Y_Axis  			=	Disable;
+	Setting_TypeDef.Z_Axis  			=	Disable;
+	Setting_TypeDef.Signal_Data			=	NULL;
+	Setting_TypeDef.Furie_Compl			=	NULL;
+	Setting_TypeDef.Furie				=	NULL;
+	Setting_TypeDef.Envelope			=	NULL;
+	Setting_TypeDef.Status_Signal 		=	Outage;
+	Setting_TypeDef.Status_Furie 		=	Outage;
+	Setting_TypeDef.Status_Envelope 	=	Outage;
+	Setting_TypeDef.Cobs_UART			=	&Cobs_UART;
+	//-----------------------------------------------------------------------------------------------//
+	//--------------------------Create Buffer for Receive Data Settings------------------------------//
+	//-------------------------*****************************************-----------------------------//
+#define Size_Data_Settings_in_Bytes (uint8_t) 8	/*	2 bytes on length realization
+	 	 	 	 	 	 	 	 	 	 	 	 *	1 bytes on mod measurments
+	 	 	 	 	 	 	 	 	 	 	 	 *	1 bytes on status activity x_axis
+	 	 	 	 	 	 	 	 	 	 	 	 *	1 bytes on status activity y_axis
+	 	 	 	 	 	 	 	 	 	 	 	 *	1 bytes on status activity z_axis
+	 	 	 	 	 	 	 	 	 	 	 	 *	1 bytes on frequensy discretisation
+	 	 	 	 	 	 	 	 	 	 	 	 *	1 bytes on range measure acceleration
+	 	 	 	 	 	 	 	 	 	 	 	 */
+	uint8_t Receive_Data_Settings[Size_Data_Settings_in_Bytes]
+								  	  	=	{0};
+	//***********************************************************************************************//
+	//						   Configuration and create task reseive data							 //
+	//***********************************************************************************************//
+	Cobs_UART.huart						=	(uart_freertos_t*) pvPortMalloc(sizeof(uart_freertos_t));
+	uart_freertos_init(					Cobs_UART.huart
+					  );
+	Cobs_UART.max_frame_size 			=	(size_t) Size_Data_Settings_in_Bytes;
+	Cobs_UART.huart -> huart			=	(UART_HandleTypeDef *) &huart2;
+	Cobs_UART.queue_depth 				=	3;
+	Cobs_UART.mode 						=	UART_COBS_INTERRUPT;
+	uart_cobs_service_rx_create(		"Task_uart_cobs_service_rx",
+										osPriorityHigh,
+										0,
+										128,
+										&Cobs_UART
+								);
+	//-------------------------******************************************----------------------------//
+	//----------------------Brains Setting, Reseive, Create and Delete Tasks-------------------------//
+	//-------------------------******************************************----------------------------//
+	//									Start Configure Accelerometr 								 //
+	//***********************************************************************************************//
+	hadxl_settings.settings.data_rate	=	ADXL345_DATARATE_0_10_HZ;
+	hadxl_settings.settings.meas_range	=	ADXL345_RANGE_2_G;
 
-		memcpy(&data, data_read, sizeof(data));
+	//								НАП�?САТЬ КОД СТАРТОВОЙ КОНФ�?ГУРАЦ�?�?
 
-		for (uint16_t i = 0; i < 127 && Index_Count < Length_Realization; i++, Index_Count++)
+	hadxl_settings.settings.offset.x	=	0;
+	hadxl_settings.settings.offset.y	=	0;
+	hadxl_settings.settings.offset.z 	=	0;
+	/* Initializing ADXL345 */
+	if(adxl345_init(&(hadxl_settings)) != ADXL345_OK)
+		Error_Handler();
+	//-----------------------------------------------------------------------------------------------//
+	//----------------------------------Create Mutex Failed Memoru-----------------------------------//
+	//-----------------------------------------------------------------------------------------------//
+	Create_Mutex_Malloc_Failed(&Cobs_UART);
+	//-------------------------******************************************----------------------------//
+	while(1)
+	{
+		//uart_cobs_recv(&Cobs_UART,  (void **)  &Receive_Data_Settings, portMAX_DELAY);
+		Read_Mutex_Malloc_Failed();
+		//uint16_t *pLength_Relization 	=	(uint16_t *) 						Receive_Data_Settings;
+		Setting_TypeDef.Length_Realization
+										=	256;//*pLength_Relization;
+		Setting_TypeDef.FStatus 		=	(Furie_Task_Status_TypeDef)   		0;//*(Receive_Data_Settings + 2);
+		Setting_TypeDef.X_Axis 			=	(Measurement_Axis_Status_TypeDef)	1;//*(Receive_Data_Settings + 3);
+		Setting_TypeDef.Y_Axis 			=	(Measurement_Axis_Status_TypeDef)	0;//*(Receive_Data_Settings + 4);
+		Setting_TypeDef.Z_Axis 			=	(Measurement_Axis_Status_TypeDef)	0;//*(Receive_Data_Settings + 5);
+		Setting_TypeDef.hadxl->hadxl.settings.data_rate
+										=	(adxl345_data_rate_t) 				12;//*(Receive_Data_Settings + 6);
+		Setting_TypeDef.hadxl->hadxl.settings.meas_range
+										=	(adxl345_range_t) 					3;//*(Receive_Data_Settings + 7);
+		//-----------------------------------------------------------------------------------------------//
+		//                                         FREE MEMORY                                           //
+		//---------------------------------***************************-----------------------------------//
+		//                                        STOP INTERUPT                                    	     //
+		//***********************************************************************************************//
+		taskENTER_CRITICAL();
+		//				SIGNALS_BUFFER 				//
+		Free_RTOS_Buffer((const void *) Setting_TypeDef.Signal_Data);
+		Free_RTOS_Buffer((const void *) Setting_TypeDef.Furie_Compl);
+		Free_RTOS_Buffer((const void *) Setting_TypeDef.Furie);
+		Free_RTOS_Buffer((const void *) Setting_TypeDef.Envelope);
+
+		//***********************************************************************************************//
+		//                                 DELETE UART TRANSMIT TASK                                     //
+		//***********************************************************************************************//
+		uart_cobs_service_tx_free();
+		Free_RTOS_Buffer((const void *) Cobs_UART.input_queue);
+		if (Cobs_UART.Transmit_Ready != NULL)
 		{
-			Signal[Index_Count] = adxl345_convert_float_mpss( data[i].y);
-
+			vSemaphoreDelete(Cobs_UART.Transmit_Ready);
 		}
+		//***********************************************************************************************//
+		//                                 DELETE ACCELEROMETER TASK                                     //
+		//***********************************************************************************************//
+		adxl345_task_free();
+		if (hadxl_task.fifo_frame_ptr_queue != NULL)
+		{
+			vQueueDelete(hadxl_task.fifo_frame_ptr_queue);
+		}
+		if (hadxl_task.suspend_notify != NULL)
+		{
+			vSemaphoreDelete(hadxl_task.suspend_notify);
+		}
+		//***********************************************************************************************//
+		//                                    DELETE COLLECTOR TASK                                      //
+		//***********************************************************************************************//
+		Data_Collector_free();
+		if (Setting_TypeDef.Status_Signal_Ready != NULL)
+		{
+			vSemaphoreDelete(Setting_TypeDef.Status_Signal_Ready);
+		}
+		//***********************************************************************************************//
+		//                                      DELETE FURIE TASK                                        //
+		//***********************************************************************************************//
+		Furie_Transform_free();
+		if (Setting_TypeDef.Status_Furie_Ready != NULL)
+		{
+			vSemaphoreDelete(Setting_TypeDef.Status_Furie_Ready);
+		}
+		//***********************************************************************************************//
+		//                                  RESUME ENABLE INTERUPT                                       //
+		//***********************************************************************************************//
+		taskEXIT_CRITICAL();
+		//-----------------------------------------------------------------------------------------------//
+		// 						    Configuration and create task transmit data                          //
+		//-----------------------------------------------------------------------------------------------//
+		Cobs_UART.queue_depth 			=	3;
+		Cobs_UART.max_frame_size		=	4 * Setting_TypeDef.Length_Realization;
+		Cobs_UART.Transmit_Ready 		= 	xSemaphoreCreateBinary();
+		uart_cobs_service_tx_create(	"Task_uart_cobs_service_tx",
+										osPriorityNormal,
+										0,
+										128,
+										&Cobs_UART
+									);
+
+		if(Read_Mutex_Malloc_Failed() == pdPASS)
+		{
+			continue;
+		}
+		//-----------------------------------------------------------------------------------------------//
+		//                           CREATE TASK AND INFORMATION FOR SIGNAL                              //
+		//-----------------------------------------------------------------------------------------------//
+		hadxl_task.fifo_frame_qty	 	=	2;
+		hadxl_task.fifo_frame_size		=	(size_t) 	(0.25 * Setting_TypeDef.Length_Realization /
+													    /*----------------------------------------*/
+																 hadxl_task.fifo_frame_qty);
+		adxl345_task_create(			"Task_ADXL345_RTOS",
+										osPriorityNormal,
+										0,
+										128,
+										&hadxl_task);
+		if(Read_Mutex_Malloc_Failed() == pdPASS)
+		{
+			continue;
+		}
+		Data_Collector_create(		"Task_Data_Collector_RTOS",
+									osPriorityNormal,
+									0,
+									128,
+									&Setting_TypeDef);
+		if(Read_Mutex_Malloc_Failed() == pdPASS)
+		{
+			continue;
+		}
+		//-----------------------------------------------------------------------------------------------//
+		//                           CREATE TASK AND INFORMATION FOR FURIE                               //
+		//-----------------------------------------------------------------------------------------------//
+		if (Setting_TypeDef.FStatus != Enable_Time)
+		{
+			Furie_Transform_create(		"Task_Furei_Calculation_RTOS",
+										osPriorityNormal,
+										0,
+										128,
+										&Setting_TypeDef);
+		}
+		osDelay(portMAX_DELAY);
 
 	}
-
-	uart_cobs_send(&Cobs_UART, &Signal, Length_Realization, 10 * portTICK_PERIOD_MS);
-	goto Start_Mesurments;
   /* USER CODE END 5 */
 }
 
